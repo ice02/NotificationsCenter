@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<link href="~/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="~/froala-editor/js/froala_editor.pkgd.min.js"></script>
+
+<div class="row">
+    <div class="col-xl-6 mb-5 mb-xl-0">
+        <div class="card shadow">
+            <div class="card-header bg-transparent">
+                <h3 class="mb-0">Notifications</h3>
+            </div>
+            <div class="card-body">
+                <div id="editor"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 mb-5 mb-xl-0">
+        <div class="row">
+            <div class="col-xl-12 mb-5 mb-xl-0">
+                <div class="card shadow">
+                    <div class="card-header bg-transparent">
+                        <h3 class="mb-0">Collection</h3>
+                    </div>
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12 mb-5 mb-xl-0">
+                <div class="card shadow">
+                    <div class="card-header bg-transparent">
+                        <h3 class="mb-0">Commands</h3>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-primary my-4" type="submit">Show preview</button>
+                        <button class="btn btn-primary my-4" type="submit">Send notification</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <script type="text/javascript">
+            var editor = new FroalaEditor('#editor', {
+                heightMin: 500,
+                heightMax: 700
+            })
+        </script>
+
+        <script>
+            let editor = new FroalaEditor('div#froala-editor', {}, function () {
+                console.log(editor.html.get())
+            });
+        </script>
+
+        <script>
+
+            (function () {
+                var webSocketProtocol = location.protocol == "https:" ? "wss:" : "ws:";
+                var webSocketURI = webSocketProtocol + "//" + location.host + "/ws";
+
+                socket = new WebSocket(webSocketURI);
+
+                socket.onopen = function () {
+                    console.log("Connected.");
+                };
+
+                socket.onclose = function (event) {
+                    if (event.wasClean) {
+                        console.log('Disconnected.');
+                    } else {
+                        console.log('Connection lost.'); // for example if server processes is killed
+                    }
+                    console.log('Code: ' + event.code + '. Reason: ' + event.reason);
+                };
+
+                socket.onmessage = function (event) {
+                    console.log("Data received: " + event.data);
+                };
+
+                socket.onerror = function (error) {
+                    console.log("Error: " + error.message);
+                };
+
+                var form = document.getElementById('form');
+                var message = document.getElementById('message');
+                form.onsubmit = function () {
+                    socket.send(message.value);
+                    message.value = '';
+                    return false;
+                };
+            })();
+
+        </script>
