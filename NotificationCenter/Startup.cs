@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Project.Identity;
+using NotificationCenter.Security;
 
 namespace NotificationCenter
 {
@@ -56,43 +57,52 @@ namespace NotificationCenter
                 // options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection"))
             });
 
-            services.AddScoped<IUserProvider, AdUserProvider>();
+            services.AddAuthorization();
+            services.AddIdentity<ADUser, ADRole>()
+                .AddUserStore<ADUserStore<ADUser>>()
+                .AddRoleStore<ADRoleStore<ADRole>>()
+                .AddUserManager<ADUserManager>()
+                .AddDefaultTokenProviders();
 
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddDefaultUI(UIFramework.Bootstrap4)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            //services.AddScoped<IUserProvider, AdUserProvider>();
 
-            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
+            //services.AddDefaultIdentity<LdapApplicationUser>();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Default Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
+            //services.AddDefaultIdentity<ApplicationUser>()
+            //    .AddRoles<IdentityRole>()
+            //    .AddDefaultUI(UIFramework.Bootstrap4)
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-                // Default Password settings.
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
+            //services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
-                // Default SignIn settings.
-                options.SignIn.RequireConfirmedEmail = false;
-                options.SignIn.RequireConfirmedPhoneNumber = false;
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    // Default Lockout settings.
+            //    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+            //    options.Lockout.MaxFailedAccessAttempts = 5;
+            //    options.Lockout.AllowedForNewUsers = true;
 
-                // Default User settings.
-                options.User.AllowedUserNameCharacters =
-                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = true;
-            });
+            //    // Default Password settings.
+            //    options.Password.RequireDigit = true;
+            //    options.Password.RequireLowercase = true;
+            //    options.Password.RequireNonAlphanumeric = true;
+            //    options.Password.RequireUppercase = true;
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequiredUniqueChars = 1;
+
+            //    // Default SignIn settings.
+            //    options.SignIn.RequireConfirmedEmail = false;
+            //    options.SignIn.RequireConfirmedPhoneNumber = false;
+
+            //    // Default User settings.
+            //    options.User.AllowedUserNameCharacters =
+            //        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            //    options.User.RequireUniqueEmail = true;
+            //});
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.Name = "CreativeTim.Argon.DotNetCore.AppCookie";
+                options.Cookie.Name = "NotificationCenter.AppCookie";
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
                 // You might want to only set the application cookies over a secure connection:
@@ -185,6 +195,8 @@ namespace NotificationCenter
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //app.UseAdMiddleware();
 
             app.UseStatusCodePagesWithReExecute("/status-code", "?code={0}");
 
