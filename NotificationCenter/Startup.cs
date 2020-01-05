@@ -57,48 +57,48 @@ namespace NotificationCenter
                 // options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection"))
             });
 
-            services.AddAuthorization();
-            services.AddIdentity<ADUser, ADRole>()
-                .AddUserStore<ADUserStore<ADUser>>()
-                .AddRoleStore<ADRoleStore<ADRole>>()
-                .AddUserManager<ADUserManager>()
-                .AddDefaultTokenProviders();
+            //services.AddAuthorization();
+            //services.AddIdentity<ADUser, ADRole>()
+            //    .AddUserStore<ADUserStore<ADUser>>()
+            //    .AddRoleStore<ADRoleStore<ADRole>>()
+            //    .AddUserManager<ADUserManager>()
+            //    .AddDefaultTokenProviders();
 
             //services.AddScoped<IUserProvider, AdUserProvider>();
 
-            //services.AddDefaultIdentity<LdapApplicationUser>();
+           // services.AddDefaultIdentity<LdapApplicationUser>();
 
-            //services.AddDefaultIdentity<ApplicationUser>()
-            //    .AddRoles<IdentityRole>()
-            //    .AddDefaultUI(UIFramework.Bootstrap4)
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddDefaultUI(UIFramework.Bootstrap4)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            //services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
-            //services.Configure<IdentityOptions>(options =>
-            //{
-            //    // Default Lockout settings.
-            //    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
-            //    options.Lockout.MaxFailedAccessAttempts = 5;
-            //    options.Lockout.AllowedForNewUsers = true;
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
 
-            //    // Default Password settings.
-            //    options.Password.RequireDigit = true;
-            //    options.Password.RequireLowercase = true;
-            //    options.Password.RequireNonAlphanumeric = true;
-            //    options.Password.RequireUppercase = true;
-            //    options.Password.RequiredLength = 6;
-            //    options.Password.RequiredUniqueChars = 1;
+                // Default Password settings.
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
 
-            //    // Default SignIn settings.
-            //    options.SignIn.RequireConfirmedEmail = false;
-            //    options.SignIn.RequireConfirmedPhoneNumber = false;
+                // Default SignIn settings.
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
 
-            //    // Default User settings.
-            //    options.User.AllowedUserNameCharacters =
-            //        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-            //    options.User.RequireUniqueEmail = true;
-            //});
+                // Default User settings.
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+            });
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -167,7 +167,7 @@ namespace NotificationCenter
             {
                 // Set a short timeout for easy testing.
                 options.IdleTimeout = TimeSpan.FromMinutes(60);
-                options.Cookie.Name = "CreativeTim.Argon.DotNetCore.SessionCookie";
+                options.Cookie.Name = "NotificationCenter.SessionCookie";
                 // You might want to only set the application cookies over a secure connection:
                 // options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Strict;
