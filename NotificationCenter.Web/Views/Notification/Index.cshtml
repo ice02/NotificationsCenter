@@ -3,8 +3,12 @@
     ViewData["Title"] = "Notifications";
 }
 
-<link href="~/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="~/froala-editor/js/froala_editor.pkgd.min.js"></script>
+<link href="~/vendor/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="~/vendor/bootstrap-combobox/css/bootstrap-combobox.min.css" rel="stylesheet" type="text/css" />
+
+
+<script type="text/javascript" src="~/vendor/froala-editor/js/froala_editor.pkgd.min.js"></script>
+<script type="text/javascript" src="~/vendor/bootstrap-combobox/js/bootstrap-combobox.js"></script>
 
 <div class="row">
     <div class="col-xl-6 mb-5 mb-xl-0">
@@ -27,18 +31,14 @@
                     </div>
                     <div class="card-body">
                         
-                        <div class="dropdown-menu dropdown-menu-arrow ">
-                            <div class=" dropdown-header noti-title">
-                                <h6 class="text-overflow m-0">Select a collection to send</h6>
-                            </div>
-                            <ul>
-                                <li>First</li>
-                                <li>Second</li>
-                                <li>Third</li>
-                                <li>Quatro</li>
-                            </ul>
-                        </div>
-                        test
+                        <select class="combobox input-large form-control" required="required">
+                            <option value="" selected="selected"> Select a collection</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="NY">New York</option>
+                            <option value="MD">Maryland</option>
+                            <option value="VA">Virginia</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -59,76 +59,9 @@
     </div>
 </div>
 
-
 <script type="text/javascript">
-            var editor = new FroalaEditor('#editor', {
-                heightMin: 500,
-                heightMax: 700
-            })
-</script>
-
-<script>
-            let editor = new FroalaEditor('div#froala-editor', {}, function () {
-                console.log(editor.html.get())
-            });
-</script>
-
-<script>
-
-    var socket = null;
-
-    (function () {
-
-        console.log("Starting websocket.");
-
-        var userName = '@User.Identity.Name'.replace("\\", "-");;
-
-
-        var webSocketURI = "ws://localhost:8888/" + userName + "/";
-        var webSocketURIOld = "ws://localhost:8888/Toolbox/";
-
-        console.log("Starting for uri " + webSocketURI);
-
-        socket = new WebSocket(webSocketURI);
-
-        socket.onopen = function () {
-            console.log("Connected.");
-        };
-
-        socket.onclose = function (event) {
-            if (event.wasClean) {
-                console.log('Disconnected.');
-            } else {
-                console.log('Connection lost.'); // for example if server processes is killed
-                // try to reconnect on old uri
-                console.log("Error, trying with uri " + webSocketURIOld);
-                socket = new WebSocket(webSocketURIOld);
-            }
-            console.log('Code: ' + event.code + '. Reason: ' + event.reason);
-        };
-
-        socket.onmessage = function (event) {
-            console.log("Data received: " + event.data);
-        };
-
-        socket.onerror = function (error) {
-            console.log("Error: " + error.message);
-        };
-
-        $("#previewBtn").click(function () {
-            console.log("Click on preview button");
-
-            socket.send('test');
-            return false;
-
-            var form = document.getElementById('form');
-            var message = document.getElementById('message');
-            form.onsubmit = function () {
-                socket.send(message.value);
-                message.value = '';
-                return false;
-            };
-        });
+    $(document).ready(function () {
+        $('.combobox').combobox();
 
         $("#sendBtn").click(function () {
             console.log("Click on send button");
@@ -142,6 +75,73 @@
             };
         });
 
-    })();
+        $("#previewBtn").click(function () {
+            console.log("Click on preview button");
 
+            console.log("Starting websocket.");
+
+            var userName = '@User.Identity.Name'.replace("\\", "-");;
+
+
+            var webSocketURI = "ws://localhost:8888/" + userName + "/";
+            var webSocketURIOld = "ws://localhost:8888/Toolbox/";
+
+            console.log("Starting for uri " + webSocketURI);
+
+            var socket = new WebSocket(webSocketURI);
+
+            socket.onopen = function () {
+                console.log("Connected, send message.");
+                socket.send('test');
+
+                console.log("Closing websocket");
+                socket.close();
+            };
+
+            socket.onclose = function (event) {
+                if (event.wasClean) {
+                    console.log('Disconnected.');
+                } else {
+                    console.log('Connection lost.'); // for example if server processes is killed
+                    // try to reconnect on old uri
+                    console.log("Error, trying with uri " + webSocketURIOld);
+                    socket = new WebSocket(webSocketURIOld);
+                }
+                console.log('Code: ' + event.code + '. Reason: ' + event.reason);
+            };
+
+            socket.onmessage = function (event) {
+                console.log("Data received: " + event.data);
+            };
+
+            socket.onerror = function (error) {
+                console.log("Error: " + error.message);
+            };
+
+            return false;
+
+            var form = document.getElementById('form');
+            var message = document.getElementById('message');
+            form.onsubmit = function () {
+                socket.send(message.value);
+                message.value = '';
+                return false;
+            };
+        });
+
+    });
 </script>
+
+<script type="text/javascript">
+            var editor = new FroalaEditor('#editor', {
+                heightMin: 500,
+                heightMax: 700
+            })
+</script>
+
+<script>
+            let editorGetted = new FroalaEditor('div#froala-editor', {}, function () {
+                console.log("editor : " + editorGetted.html.get())
+            });
+</script>
+

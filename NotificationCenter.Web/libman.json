@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap-combobox@1.2.0",
+      "destination": "wwwroot/vendor/bootstrap-combobox/"
+    },
+    {
+      "library": "froala-editor@3.0.6",
+      "destination": "wwwroot/vendor/froala-editor/"
+    }
+  ]
+}
