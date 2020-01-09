@@ -9,6 +9,7 @@
 
 <script type="text/javascript" src="~/vendor/froala-editor/js/froala_editor.pkgd.min.js"></script>
 <script type="text/javascript" src="~/vendor/bootstrap-combobox/js/bootstrap-combobox.js"></script>
+<script type="text/javascript" src="~/vendor/sockjs-client/sockjs.js" ></script>
 
 <div class="row">
     <div class="col-xl-6 mb-5 mb-xl-0">
@@ -88,35 +89,53 @@
 
             console.log("Starting for uri " + webSocketURI);
 
-            var socket = new WebSocket(webSocketURI);
+            var sock = new SockJS('webSocketURI');
+             sock.onopen = function() {
+                 console.log('open');
+                 sock.send('test');
 
-            socket.onopen = function () {
-                console.log("Connected, send message.");
-                socket.send('test');
+                 console.log('closing websocket');
+                 sock.close();
+             };
 
-                console.log("Closing websocket");
-                socket.close();
-            };
+             sock.onmessage = function(e) {
+                 console.log('message', e.data);
+                 sock.close();
+             };
 
-            socket.onclose = function (event) {
-                if (event.wasClean) {
-                    console.log('Disconnected.');
-                } else {
-                    console.log('Connection lost.'); // for example if server processes is killed
-                    // try to reconnect on old uri
-                    console.log("Error, trying with uri " + webSocketURIOld);
-                    socket = new WebSocket(webSocketURIOld);
-                }
-                console.log('Code: ' + event.code + '. Reason: ' + event.reason);
-            };
+             sock.onclose = function() {
+                 console.log('close');
+             };
 
-            socket.onmessage = function (event) {
-                console.log("Data received: " + event.data);
-            };
+            //var socket = new WebSocket(webSocketURI);
 
-            socket.onerror = function (error) {
-                console.log("Error: " + error.message);
-            };
+            //socket.onopen = function () {
+            //    console.log("Connected, send message.");
+            //    socket.send('test');
+
+            //    console.log("Closing websocket");
+            //    socket.close();
+            //};
+
+            //socket.onclose = function (event) {
+            //    if (event.wasClean) {
+            //        console.log('Disconnected.');
+            //    } else {
+            //        console.log('Connection lost.'); // for example if server processes is killed
+            //        // try to reconnect on old uri
+            //        console.log("Error, trying with uri " + webSocketURIOld);
+            //        socket = new WebSocket(webSocketURIOld);
+            //    }
+            //    console.log('Code: ' + event.code + '. Reason: ' + event.reason);
+            //};
+
+            //socket.onmessage = function (event) {
+            //    console.log("Data received: " + event.data);
+            //};
+
+            //socket.onerror = function (error) {
+            //    console.log("Error: " + error.message);
+            //};
 
             return false;
 

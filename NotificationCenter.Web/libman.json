@@ -9,6 +9,10 @@
     {
       "library": "froala-editor@3.0.6",
       "destination": "wwwroot/vendor/froala-editor/"
+    },
+    {
+      "library": "sockjs-client@1.4.0",
+      "destination": "wwwroot/vendor/sockjs-client/"
     }
   ]
 }
