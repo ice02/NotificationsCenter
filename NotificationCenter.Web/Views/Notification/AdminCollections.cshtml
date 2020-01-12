@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewData["Title"] = "Administration / Collections";
+}
+
+<style>
+    ul.nav.nav-tabs {
+        margin: 10px 0px;
+    }
+
+        ul.nav.nav-tabs li:not(.active) a {
+            background-color: #eeeeee;
+            color: grey;
+        }
+
+        ul.nav.nav-tabs li.active a {
+            border-top: 3px solid #16a765;
+        }
+
+
+    .loaderbody {
+        width: 100%;
+        height: 100%;
+        left: 0px;
+        top: 0px;
+        position: absolute;
+        background-color: rgba(128,128,128,0.2);
+        z-index: 2147483647;
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        position: fixed;
+        top: 45%;
+        left: 40%;
+    }
+</style>
+
+<div class="row">
+    <div class="col-xl-12 ">
+
+        <div class="nav-wrapper">
+            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true"><i class="ni ni-circle-08 mr-2"></i>All collections</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-fat-add mr-2"></i>Add a new collection</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+                        <div class="table-responsive">
+                            <div>
+                                <table class="table align-items-center ">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">
+                                                Collection Name
+                                            </th>
+                                            <th scope="col">
+                                                # of items
+                                            </th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list" id="collections-list">
+                                    </tbody>
+                                </table>
+                                @*<nav aria-label="Page navigation example">
+                                        <ul class="pagination justify-content-center">
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" aria-label="Previous">
+                                                    <i class="fa fa-angle-left"></i>
+                                                    <span class="sr-only">Previous</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" aria-label="Next">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="CollectionName" placeholder="Collection name *">
+                                    </div>
+                                </div>
+                                @*<div class="col-md-6">
+                <div class="form-group">
+                    <input type="text" placeholder="Regular" class="form-control" disabled />
+                </div>
+            </div>*@
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="custom-control custom-radio mb-3">
+                                            <input name="custom-radio-2" class="custom-control-input" id="rbLDAP" type="radio" onclick="select1();">
+                                            <label class="custom-control-label" for="rbLDAP">LDAP Request</label>
+                                        </div>
+                                        <div class="custom-control custom-radio mb-3">
+                                            <input name="custom-radio-2" class="custom-control-input" id="rbSQL" type="radio" onclick="select2();">
+                                            <label class="custom-control-label" for="rbSQL">SQL Request</label>
+                                        </div>
+                                        <div class="custom-control custom-radio mb-3">
+                                            <input name="custom-radio-2" class="custom-control-input" id="rbExcel" type="radio" onclick="select3();">
+                                            <label class="custom-control-label" for="rbExcel">Excel file</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="input-group mb-4" id="LDAPPanel" style="display:none">
+                                            <input class="form-control" placeholder="LDAP Request" type="text">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><span class="badge badge-default">LDAP</span></span>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-4" id="SQLPanel" style="display:none">
+                                            <input class="form-control" placeholder="SQL Query" type="text">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><span class="badge badge-default">SQL</span></span>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-4" id="ExcelPanel" style="display:none">
+                                            <input class="form-control" placeholder="Excel file name" type="text">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><span class="badge badge-default">Excel</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group has-success">
+                                        <input type="text" placeholder="Success" class="form-control is-valid" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group has-danger">
+                                        <input type="email" placeholder="Error Input" class="form-control is-invalid" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-primary" value="Create" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-outline-default" value="reset form" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            $.get('/Notification/GetCollectionsData').done(function (collections) {
+                $.each(collections, function (i, collection) {
+                    console.log(collection);
+                    var item = `<tr>
+                                                    <th scope="row" class="name">
+                                                        ${collection.name}
+                                                    </th>
+                                                    <td class="budget">
+                                                        ${collection.usrCnt}
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <div class="dropdown">
+                                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                                <a class="dropdown-item" href="#">Action</a>
+                                                                <a class="dropdown-item" href="#">Another action</a>
+                                                                <a class="dropdown-item" href="#">Something else here</a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>`;
+                    $('#collections-list').append(item);
+                });
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        function select1() {
+            $('#LDAPPanel').css("display", 'flex');
+            $('#SQLPanel').css("display", 'none');
+            $('#ExcelPanel').css("display", 'none');
+
+            //$(panel).style.display = 'block';
+        }
+        function select2() {
+            $('#LDAPPanel').css("display", 'none');
+            $('#SQLPanel').css("display", 'flex');
+            $('#ExcelPanel').css("display", 'none');
+
+            //$(panel).style.display = 'block';
+        }
+        function select3() {
+            $('#LDAPPanel').css("display", 'none');
+            $('#SQLPanel').css("display", 'none');
+            $('#ExcelPanel').css("display", 'flex');
+
+            //$(panel).style.display = 'block';
+        }
+    </script>
+
+</div>
+

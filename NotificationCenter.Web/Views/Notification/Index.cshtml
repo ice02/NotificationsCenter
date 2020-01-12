@@ -81,61 +81,61 @@
 
             console.log("Starting websocket.");
 
-            var userName = '@User.Identity.Name'.replace("\\", "-");;
+            var userName = '@User.Identity.Name'.replace("\\", "-");
 
 
-            var webSocketURI = "ws://localhost:8888/" + userName + "/";
+            var webSocketURI = "ws://localhost:8888/EUR-lpierre020413";// + userName + "/";
             var webSocketURIOld = "ws://localhost:8888/Toolbox/";
 
             console.log("Starting for uri " + webSocketURI);
 
-            var sock = new SockJS('webSocketURI');
-             sock.onopen = function() {
-                 console.log('open');
-                 sock.send('test');
+            //var sock = new SockJS(webSocketURI);
+            // sock.onopen = function() {
+            //     console.log('open');
+            //     sock.send('test');
 
-                 console.log('closing websocket');
-                 sock.close();
-             };
+            //     console.log('closing websocket');
+            //     sock.close();
+            // };
 
-             sock.onmessage = function(e) {
-                 console.log('message', e.data);
-                 sock.close();
-             };
+            // sock.onmessage = function(e) {
+            //     console.log('message', e.data);
+            //     sock.close();
+            // };
 
-             sock.onclose = function() {
-                 console.log('close');
-             };
+            // sock.onclose = function() {
+            //     console.log('close');
+            // };
 
-            //var socket = new WebSocket(webSocketURI);
+            var socket = new WebSocket(webSocketURI);
 
-            //socket.onopen = function () {
-            //    console.log("Connected, send message.");
-            //    socket.send('test');
+            socket.onopen = function () {
+                console.log("Connected, send message.");
+                socket.send('test');
 
-            //    console.log("Closing websocket");
-            //    socket.close();
-            //};
+                console.log("Closing websocket");
+                socket.close();
+            };
 
-            //socket.onclose = function (event) {
-            //    if (event.wasClean) {
-            //        console.log('Disconnected.');
-            //    } else {
-            //        console.log('Connection lost.'); // for example if server processes is killed
-            //        // try to reconnect on old uri
-            //        console.log("Error, trying with uri " + webSocketURIOld);
-            //        socket = new WebSocket(webSocketURIOld);
-            //    }
-            //    console.log('Code: ' + event.code + '. Reason: ' + event.reason);
-            //};
+            socket.onclose = function (event) {
+                if (event.wasClean) {
+                    console.log('Disconnected.');
+                } else {
+                    console.log('Connection lost.'); // for example if server processes is killed
+                    // try to reconnect on old uri
+                    console.log("Error, trying with uri " + webSocketURIOld);
+                    socket = new WebSocket(webSocketURIOld);
+                }
+                console.log('Code: ' + event.code + '. Reason: ' + event.reason);
+            };
 
-            //socket.onmessage = function (event) {
-            //    console.log("Data received: " + event.data);
-            //};
+            socket.onmessage = function (event) {
+                console.log("Data received: " + event.data);
+            };
 
-            //socket.onerror = function (error) {
-            //    console.log("Error: " + error.message);
-            //};
+            socket.onerror = function (error) {
+                console.log("Error: " + error.message);
+            };
 
             return false;
 

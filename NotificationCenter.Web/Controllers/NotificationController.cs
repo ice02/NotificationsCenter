@@ -12,5 +12,15 @@ namespace NotificationCenter.Web.Controllers
         {
             return View();
         }
+
+        public IActionResult Admincollections()
+        {
+            return View();
+        }
+
+        public IActionResult GetCollectionsData()
+        {
+            return Json(new List<dynamic>() { new { id = 1, Name = "Test Collection", UsrCnt = 12 } });
+        }
     }
 }
